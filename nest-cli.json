@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/gateway/src",
+  "monorepo": true,
+  "root": "apps/gateway",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/gateway/tsconfig.app.json"
+  },
+  "projects": {
+    "gateway": {
+      "type": "application",
+      "root": "apps/gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/gateway/tsconfig.app.json"
+      }
+    },
+    "credentials": {
+      "type": "application",
+      "root": "apps/credentials",
+      "entryFile": "main",
+      "sourceRoot": "apps/credentials/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/credentials/tsconfig.app.json"
+      }
+    },
+    "permanent-db": {
+      "type": "library",
+      "root": "libs/permanent-db",
+      "entryFile": "index",
+      "sourceRoot": "libs/permanent-db/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/permanent-db/tsconfig.lib.json"
+      }
+    },
+    "cache-db": {
+      "type": "library",
+      "root": "libs/cache-db",
+      "entryFile": "index",
+      "sourceRoot": "libs/cache-db/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cache-db/tsconfig.lib.json"
+      }
+    }
+  }
+}
