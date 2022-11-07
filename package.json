@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
+    "@nestjs/mapped-types": "^1.2.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.1.2",
     "@types/cache-manager": "^4.0.2",

@@ -4,11 +4,12 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 
 import { DBAccessService } from './db-access.service';
-import { CreateUserDto } from './dto/user';
+import { CreateUserDto, EditUserDto } from './dto';
 import { User } from './entity/user';
 
 @Controller()
@@ -16,12 +17,17 @@ export class DBAccessController {
   constructor(private readonly dbAccessService: DBAccessService) {}
 
   @Get(':id')
-  async getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return await this.dbAccessService.getUser(id);
+  getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.dbAccessService.getUser(id);
   }
 
   @Post()
-  async createUser(@Body() user: CreateUserDto): Promise<User> {
-    return await this.dbAccessService.createUser(user);
+  createUser(@Body() user: CreateUserDto): Promise<User> {
+    return this.dbAccessService.createUser(user);
+  }
+
+  @Patch(':id')
+  editUser(@Param('id') id: number, @Body() user: EditUserDto): Promise<User> {
+    return this.dbAccessService.editUser(id, user);
   }
 }
