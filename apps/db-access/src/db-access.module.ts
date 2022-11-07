@@ -1,10 +1,10 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { DBAccessController } from "./db-access.controller";
-import { DBAccessService } from "./db-access.service";
-import { User } from "./entity/user";
+import { DBAccessController } from './db-access.controller';
+import { DBAccessService } from './db-access.service';
+import { User } from './entity/user';
 
 @Module({
   imports: [
@@ -27,9 +27,9 @@ import { User } from "./entity/user";
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_BASE_NAME,
       entities: [User],
-      synchronize: true
+      synchronize: true,
     }),
-    TypeOrmModule.forFeature([User])
+    TypeOrmModule.forFeature([User]),
   ],
   providers: [DBAccessService],
   controllers: [DBAccessController],

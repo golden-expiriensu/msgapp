@@ -1,7 +1,7 @@
-import { ValidationPipe } from "@nestjs/common";
-import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 
-import { DBAccessModule } from "./db-access.module";
+import { DBAccessModule } from './db-access.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(DBAccessModule);
@@ -9,8 +9,8 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-    })
-  )
+    }),
+  );
   await app.listen(3000);
 }
 bootstrap();
