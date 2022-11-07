@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as redisStore from 'cache-manager-redis-store';
 
 import { DBAccessController } from './db-access.controller';
 import { DBAccessService } from './db-access.service';
@@ -8,16 +9,16 @@ import { User } from './entity/user';
 
 @Module({
   imports: [
-    // CacheModule.register({
-    //   // @ts-ignore
-    //   store: async () => await redisStore({
-    //     // Store-specific configuration:
-    //     socket: {
-    //       host: 'localhost',
-    //       port: 6379,
-    //     }
-    //   })
-    // }),
+    CacheModule.register({
+      store: redisStore.create({
+        // @ts-ignore
+        ttl: 60 * 60 * 24 * 10, // 10 days
+      }),
+      socket: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: Number(process.env.REDIS_PORT || 6379),
+      },
+    }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
