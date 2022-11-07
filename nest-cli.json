@@ -27,22 +27,13 @@
         "tsConfigPath": "apps/credentials/tsconfig.app.json"
       }
     },
-    "permanent-db": {
-      "type": "library",
-      "root": "libs/permanent-db",
-      "entryFile": "index",
-      "sourceRoot": "libs/permanent-db/src",
+    "db-access": {
+      "type": "application",
+      "root": "apps/db-access",
+      "entryFile": "main",
+      "sourceRoot": "apps/db-access/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/permanent-db/tsconfig.lib.json"
-      }
-    },
-    "cache-db": {
-      "type": "library",
-      "root": "libs/cache-db",
-      "entryFile": "index",
-      "sourceRoot": "libs/cache-db/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/cache-db/tsconfig.lib.json"
+        "tsConfigPath": "apps/db-access/tsconfig.app.json"
       }
     }
   }

@@ -16,20 +16,6 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@app/permanent-db": [
-        "libs/permanent-db/src"
-      ],
-      "@app/permanent-db/*": [
-        "libs/permanent-db/src/*"
-      ],
-      "@app/cache-db": [
-        "libs/cache-db/src"
-      ],
-      "@app/cache-db/*": [
-        "libs/cache-db/src/*"
-      ]
-    }
+    "noFallthroughCasesInSwitch": false
   }
 }
