@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { hash } from 'argon2';
 import { Repository } from 'typeorm';
 
 import { CreateUserDto } from './dto/user';
@@ -16,8 +17,10 @@ export class DBAccessService {
     return this.userRepository.findOneBy({ id });
   }
 
-  createUser(user: CreateUserDto): Promise<User> {
+  async createUser(user: CreateUserDto): Promise<User> {
     const userRecord = this.userRepository.create(user);
+    userRecord.password = await hash(userRecord.password);
+
     return this.userRepository.save(userRecord);
   }
 }
