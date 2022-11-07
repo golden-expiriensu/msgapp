@@ -1,4 +1,9 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  ForbiddenException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'argon2';
 import { Cache } from 'cache-manager';
@@ -23,12 +28,15 @@ export class DBAccessService {
       return cachedUser;
     } else {
       const user = await this.userRepository.findOneBy({ id });
-      await this.setCache(user, userCacheKeyPrefix);
+      if (user) await this.setCache(user, userCacheKeyPrefix);
       return user;
     }
   }
 
   async createUser(user: CreateUserDto): Promise<User> {
+    if (await this.isLoginOccupied(user.login))
+      throw new ForbiddenException('login is occupied');
+
     const userRecord = this.userRepository.create(user);
     userRecord.password = await hash(userRecord.password);
 
@@ -36,6 +44,10 @@ export class DBAccessService {
     await this.setCache(createdUser, userCacheKeyPrefix);
 
     return createdUser;
+  }
+
+  private async isLoginOccupied(login: string): Promise<boolean> {
+    return Boolean(await this.userRepository.findOne({ where: { login } }));
   }
 
   private getCache<T extends { id: number }>(
