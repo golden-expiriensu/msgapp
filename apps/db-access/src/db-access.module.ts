@@ -2,6 +2,7 @@ import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
+import * as Joi from 'joi';
 
 import { DBAccessController } from './db-access.controller';
 import { DBAccessService } from './db-access.service';
@@ -19,7 +20,19 @@ import { User } from './entity/user';
         port: Number(process.env.REDIS_PORT || 6379),
       },
     }),
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        REDIS_HOST: Joi.string(),
+        REDIS_PORT: Joi.number(),
+        POSTGRES_HOST: Joi.string(),
+        POSTGRES_PORT: Joi.number(),
+        POSTGRES_USER_NAME: Joi.string().required(),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_BASE_NAME: Joi.string().required(),
+        POSTGRES_SYNCHRONIZE: Joi.boolean(),
+      }),
+      envFilePath: 'apps/db-access/.env',
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST || 'localhost',
