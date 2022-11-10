@@ -9,6 +9,7 @@ import { hash } from 'argon2';
 import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
 
+import { LoginOccupiedException } from '../errors';
 import { CreateUserDto, EditUserDto } from './dto';
 import { User } from './entity/user';
 
@@ -33,8 +34,9 @@ export class DBAccessService {
     }
   }
 
-  async createUser(user: CreateUserDto): Promise<User> {
-    await this.throwErrorIfLoginOccupied(user.login);
+  async createUser(user: CreateUserDto): Promise<User | ForbiddenException> {
+    if (await this.isLoginOccupied(user.login))
+      return new LoginOccupiedException();
 
     const userRecord = this.userRepository.create(user);
     userRecord.password = await hash(userRecord.password);
@@ -45,8 +47,13 @@ export class DBAccessService {
     return createdUser;
   }
 
-  async editUser(id: number, user: EditUserDto): Promise<User> {
-    if (user.login) await this.throwErrorIfLoginOccupied(user.login);
+  async editUser(
+    id: number,
+    user: EditUserDto,
+  ): Promise<User | ForbiddenException> {
+    if (await this.isLoginOccupied(user.login))
+      return new LoginOccupiedException();
+
     if (user.password) user.password = await hash(user.password);
 
     await this.userRepository.update(id, user);
@@ -55,11 +62,6 @@ export class DBAccessService {
     await this.setCache(newUser, userCacheKeyPrefix);
 
     return newUser;
-  }
-
-  private async throwErrorIfLoginOccupied(login: string): Promise<void> {
-    if (await this.isLoginOccupied(login))
-      throw new ForbiddenException('login is occupied');
   }
 
   private async isLoginOccupied(login: string): Promise<boolean> {

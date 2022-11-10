@@ -1,13 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
+import { LoginOccupiedException } from '../errors';
 import { DBAccessService } from './db-access.service';
 import { CreateUserDto, EditUserDto } from './dto';
 import { User } from './entity/user';
@@ -16,18 +10,22 @@ import { User } from './entity/user';
 export class DBAccessController {
   constructor(private readonly dbAccessService: DBAccessService) {}
 
-  @Get(':id')
-  getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
+  @MessagePattern('get_user')
+  getUser(@Payload() id: number): Promise<User> {
     return this.dbAccessService.getUser(id);
   }
 
-  @Post()
-  createUser(@Body() user: CreateUserDto): Promise<User> {
+  @MessagePattern('create_user')
+  createUser(
+    @Payload() user: CreateUserDto,
+  ): Promise<User | LoginOccupiedException> {
     return this.dbAccessService.createUser(user);
   }
 
-  @Patch(':id')
-  editUser(@Param('id') id: number, @Body() user: EditUserDto): Promise<User> {
-    return this.dbAccessService.editUser(id, user);
+  @MessagePattern('edit_user')
+  editUser(
+    @Payload() user: EditUserDto & { id: number },
+  ): Promise<User | LoginOccupiedException> {
+    return this.dbAccessService.editUser(user.id, user);
   }
 }
