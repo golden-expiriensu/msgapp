@@ -1,1 +1,1 @@
-export * from './rabbitmqResponse';
+export * from './microserviseResponse';

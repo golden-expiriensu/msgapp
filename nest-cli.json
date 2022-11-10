@@ -35,6 +35,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/db-access/tsconfig.app.json"
       }
+    },
+    "microservice-response-handler": {
+      "type": "library",
+      "root": "libs/microservice-response-handler",
+      "entryFile": "index",
+      "sourceRoot": "libs/microservice-response-handler/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/microservice-response-handler/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -1,19 +1,11 @@
-import {
-  CACHE_MANAGER,
-  ForbiddenException,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'argon2';
 import { Cache } from 'cache-manager';
-import {
-  CreateUserDto,
-  EditUserDto,
-  LoginOccupiedException,
-  User,
-} from 'common';
+import { CreateUserDto, EditUserDto, MicroserviceResponse, User } from 'common';
 import { Repository } from 'typeorm';
+
+import { LoginOccupiedException } from './errors';
 
 const userCacheKeyPrefix = 'users';
 
@@ -36,9 +28,9 @@ export class DBAccessService {
     }
   }
 
-  async createUser(user: CreateUserDto): Promise<User | ForbiddenException> {
+  async createUser(user: CreateUserDto): Promise<MicroserviceResponse<User>> {
     if (await this.isLoginOccupied(user.login))
-      return new LoginOccupiedException();
+      return new MicroserviceResponse<User>(new LoginOccupiedException());
 
     const userRecord = this.userRepository.create(user);
     userRecord.password = await hash(userRecord.password);
@@ -46,15 +38,15 @@ export class DBAccessService {
     const createdUser = await this.userRepository.save(userRecord);
     await this.setCache(createdUser, userCacheKeyPrefix);
 
-    return createdUser;
+    return new MicroserviceResponse(createdUser);
   }
 
   async editUser(
     id: number,
     user: EditUserDto,
-  ): Promise<User | ForbiddenException> {
+  ): Promise<MicroserviceResponse<User>> {
     if (await this.isLoginOccupied(user.login))
-      return new LoginOccupiedException();
+      return new MicroserviceResponse<User>(new LoginOccupiedException());
 
     if (user.password) user.password = await hash(user.password);
 
@@ -63,7 +55,7 @@ export class DBAccessService {
     const newUser = await this.userRepository.findOneBy({ id });
     await this.setCache(newUser, userCacheKeyPrefix);
 
-    return newUser;
+    return new MicroserviceResponse(newUser);
   }
 
   private async isLoginOccupied(login: string): Promise<boolean> {

@@ -1,12 +1,15 @@
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto, EditUserDto, User } from 'common';
+import { MicroserviceResponse } from 'common/types/microserviseResponse';
+import { MicroserviceResponseHandlerService } from 'libs/microservice-response-handler/src';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class CredentialsService {
   constructor(
     @Inject('DB_ACCESS') private readonly dbAccessMicroservice: ClientProxy,
+    private readonly rabbitmqHandler: MicroserviceResponseHandlerService,
   ) {}
 
   getUser(id: number): Promise<User> {
@@ -14,33 +17,21 @@ export class CredentialsService {
     return lastValueFrom(source);
   }
 
-  createUser(user: CreateUserDto): Promise<User> {
+  async createUser(user: CreateUserDto): Promise<User> {
     const source = this.dbAccessMicroservice.send<
-      User | ForbiddenException,
+      Promise<MicroserviceResponse<User>>,
       CreateUserDto
     >('create_user', user);
 
-    return this.handleMicroserviseResponse(lastValueFrom(source));
+    return this.rabbitmqHandler.extract(await lastValueFrom(source));
   }
 
-  editUser(id: number, user: EditUserDto): Promise<User> {
+  async editUser(id: number, user: EditUserDto): Promise<User> {
     const source = this.dbAccessMicroservice.send<
-      User | ForbiddenException,
+      Promise<MicroserviceResponse<User>>,
       EditUserDto & { id: number }
     >('edit_user', { ...user, id });
 
-    return this.handleMicroserviseResponse(lastValueFrom(source));
-  }
-
-  private async handleMicroserviseResponse<T>(
-    response: Promise<T | ForbiddenException>,
-  ): Promise<T> {
-    const raw = await response;
-    // console.log((raw as ForbiddenException).getResponse())
-    // if (raw instanceof ForbiddenException) throw raw
-    // return raw as T
-    console.log(raw);
-
-    return raw as T;
+    return this.rabbitmqHandler.extract(await lastValueFrom(source));
   }
 }

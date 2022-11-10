@@ -1,11 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import {
-  CreateUserDto,
-  EditUserDto,
-  LoginOccupiedException,
-  User,
-} from 'common';
+import { CreateUserDto, EditUserDto, MicroserviceResponse, User } from 'common';
 
 import { DBAccessService } from './db-access.service';
 
@@ -21,14 +16,14 @@ export class DBAccessController {
   @MessagePattern('create_user')
   createUser(
     @Payload() user: CreateUserDto,
-  ): Promise<User | LoginOccupiedException> {
+  ): Promise<MicroserviceResponse<User>> {
     return this.dbAccessService.createUser(user);
   }
 
   @MessagePattern('edit_user')
   editUser(
     @Payload() user: EditUserDto & { id: number },
-  ): Promise<User | LoginOccupiedException> {
+  ): Promise<MicroserviceResponse<User>> {
     return this.dbAccessService.editUser(user.id, user);
   }
 }

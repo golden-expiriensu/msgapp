@@ -7,7 +7,7 @@
     "prepare": "husky install",
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"{apps,common}/**/*.ts\"",
+    "format": "prettier --write \"{apps,common,libs}/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -84,7 +84,11 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
-    ]
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@app/microservice-response-handler(|/.*)$": "<rootDir>/libs/microservice-response-handler/src/$1"
+    }
   }
 }

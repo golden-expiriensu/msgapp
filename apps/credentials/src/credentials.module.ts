@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { envSchema } from 'env-joi-schema';
+import { MicroserviceResponseHandlerModule } from 'libs/microservice-response-handler/src';
 
 import { CredentialsController } from './credentials.controller';
 import { CredentialsService } from './credentials.service';
@@ -33,6 +34,7 @@ import { CredentialsService } from './credentials.service';
         },
       },
     ]),
+    MicroserviceResponseHandlerModule,
   ],
   controllers: [CredentialsController],
   providers: [CredentialsService],
