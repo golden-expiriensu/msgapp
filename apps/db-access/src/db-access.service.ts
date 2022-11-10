@@ -7,11 +7,13 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'argon2';
 import { Cache } from 'cache-manager';
+import {
+  CreateUserDto,
+  EditUserDto,
+  LoginOccupiedException,
+  User,
+} from 'common';
 import { Repository } from 'typeorm';
-
-import { LoginOccupiedException } from '../errors';
-import { CreateUserDto, EditUserDto } from './dto';
-import { User } from './entity/user';
 
 const userCacheKeyPrefix = 'users';
 

@@ -7,8 +7,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { CreateUserDto, EditUserDto } from 'apps/db-access/src/dto';
-import { User } from 'apps/db-access/src/entity/user';
+import { CreateUserDto, EditUserDto, User } from 'common';
 
 import { CredentialsService } from './credentials.service';
 

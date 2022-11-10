@@ -1,10 +1,13 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import {
+  CreateUserDto,
+  EditUserDto,
+  LoginOccupiedException,
+  User,
+} from 'common';
 
-import { LoginOccupiedException } from '../errors';
 import { DBAccessService } from './db-access.service';
-import { CreateUserDto, EditUserDto } from './dto';
-import { User } from './entity/user';
 
 @Controller()
 export class DBAccessController {

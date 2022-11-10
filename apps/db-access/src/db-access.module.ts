@@ -2,11 +2,11 @@ import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
+import { User } from 'common';
 
 import { envSchema } from '../../../env-joi-schema';
 import { DBAccessController } from './db-access.controller';
 import { DBAccessService } from './db-access.service';
-import { User } from './entity/user';
 
 @Module({
   imports: [
