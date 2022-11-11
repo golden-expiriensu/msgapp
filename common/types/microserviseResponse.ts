@@ -1,10 +1,9 @@
 import { ForbiddenException } from '@nestjs/common';
 
 export class MicroserviceResponse<T> {
-  public errorMessage: string = undefined;
+  public readonly isError: boolean = false;
 
-  constructor(public result: T | ForbiddenException) {
-    if (result instanceof ForbiddenException)
-      this.errorMessage = result.message;
+  constructor(public readonly result: T | ForbiddenException) {
+    if (result instanceof ForbiddenException) this.isError = true;
   }
 }
